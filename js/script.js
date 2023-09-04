@@ -1,7 +1,7 @@
 // script.js
-let cart = [];
-let productInCart;
+let cart = []; // Array para almacenar los productos seleccionados
 let counterDiv = document.querySelector(".counter");
+let productInCart;
 let quantityProducts;
 let addNotificationDiv= true;
 
@@ -10,7 +10,8 @@ function getProductInfo(item) {
 }
 
 function initializer() {
-    addNotificationDiv = false; // Configurar como false al inicio
+    const btns = document.querySelectorAll(".btn-Cart");
+
 
         // Featured Product Cards
     const cardFeaturedDataArray = [
@@ -124,7 +125,72 @@ function initializer() {
             data.oldPrice,
             data.newPrice
         );
-    });  
+    });
+
+
+
+
+
+    btns.forEach(function (btn) {
+        btn.addEventListener("click", function (evento) {
+            // Aquí debes obtener la información del producto seleccionado
+            const productInfo = getProductInfo(evento.target); // Implementa la lógica para obtener la información correcta
+            cart.push(productInfo); // Agrega el producto al carrito
+            updateCartNotification(); // Actualiza la notificación del carrito
+        });
+    });
+}
+
+function convertToString(object) {
+    return JSON.stringify(object);
+}
+
+function createElementWithClass(tagName, className) {
+    let element = document.createElement(tagName);
+    element.className = className;
+    return element;
+}
+
+function createNotification() {
+    const notification = document.createElement("div");
+    notification.className = "productsInCart";
+    
+    const quantityProducts = document.createElement("p");
+    quantityProducts.className = "quantityProducts";
+    quantityProducts.textContent = cart.length > 9 ? '9+' : cart.length;
+    
+    notification.appendChild(quantityProducts);
+    counterDiv.appendChild(notification);
+}
+
+function changeQuantityProducts(number) {
+    const quantityProducts = document.querySelector(".quantityProducts");
+    if (quantityProducts) {
+        quantityProducts.textContent = number;
+    }
+}
+
+function updateCartNotification() {
+    const notification = document.querySelector(".productsInCart");
+    
+    if (!notification) {
+        // Si la notificación no existe, créala
+        createNotification();
+    }
+    
+    const quantityProducts = cart.length > 9 ? '9+' : cart.length; // Verifica si hay más de 9 productos
+    changeQuantityProducts(quantityProducts);
+}   
+
+function pushToCart(item) {
+    cart.push(item);
+}
+
+function saveProduct() {
+    let productInfo = getProductInfo;
+    pushToCart(productInfo);
+    allProducts = convertToString(products);
+    localStorage.setItem("cart", allProducts);
 }
 
 function createProductCard(title, imgSrc, oldPrice, newPrice, identifierNumber) {
