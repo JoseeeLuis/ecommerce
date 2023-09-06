@@ -5,57 +5,45 @@ let productInCart;
 let quantityProducts;
 let addNotificationDiv= true;
 
+async function fetchData() {
+    
+    const apiURL = "https://64f659ae2b07270f705e6753.mockapi.io/api/products";
+
+    try {
+        const apiResponse = await fetch(apiURL);
+        const jsonData = await apiResponse.json();
+
+      // Ahora 'cardFeaturedDataArray' contendrá los datos de la API en el formato deseado
+    console.log(jsonData);
+    return await jsonData
+    } catch (error) {
+        console.error("Error al obtener los datos de la API:", error);
+    }
+}
 function getProductInfo(item) {
     return item;
 }
 
-function initializer() {
-    const btns = document.querySelectorAll(".btn-Cart");
+async function initializer() {
+
+    const data = await fetchData() 
+        console.log(data)
 
 
-        // Featured Product Cards
-    const cardFeaturedDataArray = [
-        {
-            title: 'Lorem ipsum dolor sit amet consectetur',
-            imgSrc: 'img/example pic 2.png',
-            oldPrice: '$232',
-            newPrice: '$2321',
-            identifierNumber: '82839823', // Corregido el nombre de la propiedad
-        },
-        {
-            title: 'Lorem hiral uranio dolor sit amet consectetur',
-            imgSrc: 'img/example pic 2.png',
-            oldPrice: '$232',
-            newPrice: '$2321',
-            identifierNumber: '82839823', // Corregido el nombre de la propiedad
-        },
-        {
-            title: 'Lorem ipsum dolor sit amet consectetur',
-            imgSrc: 'img/example pic 2.png',
-            oldPrice: '$232',
-            newPrice: '$2321',
-            identifierNumber: '82839823', // Corregido el nombre de la propiedad
-        },
-            {
-            title: 'Lorem ipsum dolor sit amet consectetur',
-            imgSrc: 'img/example pic 2.png',
-            oldPrice: '$232',
-            newPrice: '$2321',
-            identifierNumber: '82839823', // Corregido el nombre de la propiedad
-        }
-    ];
+        data.forEach((product) => {
+            if (product.featured == true) {
+                const productCard = createProductCard(
+                    product.title,
+                    product.imag,
+                    product.previousPrice,
+                    product.price,
+                    product.id,
+                );
 
-    cardFeaturedDataArray.forEach((data) => {
-        const productCard = createProductCard(
-            data.title,
-            data.imgSrc,
-            data.oldPrice,
-            data.newPrice,
-            data.identifierNumber
-        );
-
-        addProductToContainer(productCard); // Agrega la tarjeta de producto al contenedor
-    });
+                console.log(productCard);
+                addProductToContainer(productCard);
+            }
+        });
 
 
     // Sale Products Card
@@ -127,16 +115,11 @@ function initializer() {
         );
     });
 
-
-
-
+    const btns = document.querySelectorAll(".btn-Cart");
 
     btns.forEach(function (btn) {
         btn.addEventListener("click", function (evento) {
-            // Aquí debes obtener la información del producto seleccionado
-            const productInfo = getProductInfo(evento.target); // Implementa la lógica para obtener la información correcta
-            cart.push(productInfo); // Agrega el producto al carrito
-            updateCartNotification(); // Actualiza la notificación del carrito
+            console.log("Click  ")
         });
     });
 }
