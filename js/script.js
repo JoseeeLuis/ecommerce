@@ -34,95 +34,65 @@ async function initializer() {
             if (product.featured == true) {
                 const productCard = createProductCard(
                     product.title,
-                    product.imag,
+                    product.image,
                     product.previousPrice,
                     product.price,
                     product.id,
                 );
 
-                console.log(productCard);
-                addProductToContainer(productCard);
+                addProductToContainer(productCard,'.products');
             }
         });
 
 
     // Sale Products Card
-    const cardSaleDataArray = [
-        {
-            title: 'Lorem ipsum dolor sit amet consectetur',
-            imgSrc: 'img/example pic 2.png',
-            oldPrice: '$232',
-            newPrice: '$2321',
-            identifier: 'Identifier number 1',
-            productDiscount:`20%`
-        },
-        {
-            title: 'Limude ehfue dolor sit amet consectetur',
-            imgSrc: 'img/example pic 2.png',
-            oldPrice: '$232',
-            newPrice: '$2321',
-            identifier: 'fdvfvfd number 1',
-            productDiscount:`20%`
-        },
-    ];
-
-
-
-    cardSaleDataArray.forEach((data) => {
-        createSaleCard(
-            data.title,
-            data.imgSrc,
-            data.oldPrice,
-            data.newPrice,
-            data.identifier ,
-            data.productDiscount
-        );
+    data.forEach((product) => {
+        if (product.onSale == true) {
+            const saleCards = createSaleCard(
+                product.title,
+                product.image,
+                product.previousPrice,
+                product.price,
+                product.id,
+                `${Math.round(((product.previousPrice - product.price) / product.previousPrice) * 100)}%`,
+            );
+            console.log(saleCards);
+            addProductToContainer(saleCards, ".saleCards");
+        }
     });
 
 
-    //Horizontal card
+    // Horizontal card
+    data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-    const cardHDataArray = [
-        {
-            title: 'Lorem ipsum dolor sit amet consectetur',
-            imgSrc: 'img/example pic 1.png',
-            rating: 5,
-            numberRating: 126,
-            identifier: 'Identifier number 1',
-            oldPrice: '$232',
-            newPrice: '$2321'
-        },
-        {
-            title: 'Lorem ipsum dolor sit amet consectetur',
-            imgSrc: 'img/example pic 1.png',
-            rating: 5,
-            numberRating: 126,
-            identifier: 'Identifier number 1',
-            oldPrice: '$232',
-            newPrice: '$2321'
-        }
-    ];
+    // Tomar los primeros n elementos (por ejemplo, los 5 productos más recientes)
+    const numRecentProducts = 4; // Puedes ajustar este número según tus necesidades
+    const recentProducts = data.slice(0, numRecentProducts);
 
-    cardHDataArray.forEach((data) => {
-        createHorizontalCard(
-            data.title,
-            data.imgSrc,
-            data.rating,
-            data.numberRating,
-            data.identifier,
-            data.oldPrice,
-            data.newPrice
-        );
+    // Crear tarjetas de productos para los productos más recientes y agregarlos al contenedor
+    recentProducts.forEach((product) => {
+    const productCard = createHorizontalCard (
+        product.title,
+        product.image,
+        product.stars,
+        product.reviews,
+        product.id,
+        product.previousPrice,
+        product.price
+    );
+
+    addProductToContainer(productCard, '.productsH');
     });
 
     const btns = document.querySelectorAll(".btn-Cart");
 
     btns.forEach(function (btn) {
-        btn.addEventListener("click", function (evento) {
-            console.log("Click  ")
-        });
+    btn.addEventListener("click", function (evento) {
+        console.log("Click  ");
     });
-}
+    });
+    }
+
 
 function convertToString(object) {
     return JSON.stringify(object);
@@ -211,11 +181,11 @@ function createProductCard(title, imgSrc, oldPrice, newPrice, identifierNumber) 
 
     const oldPricePara = document.createElement("p");
     oldPricePara.className = "oldPrice";
-    oldPricePara.textContent = oldPrice;
+    oldPricePara.textContent = `${oldPrice}`;
 
     const newPricePara = document.createElement("p");
     newPricePara.className = "newPrice";
-    newPricePara.textContent = newPrice;
+    newPricePara.textContent = `$${newPrice}`;
 
     priceDiv.appendChild(oldPricePara);
     priceDiv.appendChild(newPricePara);
@@ -245,8 +215,8 @@ function createProductCard(title, imgSrc, oldPrice, newPrice, identifierNumber) 
     return cardDiv; // Devuelve la tarjeta de producto creada
 }
 
-function addProductToContainer(productCard) {
-    const productsContainer = document.querySelector('.products');
+function addProductToContainer(productCard, container) {
+    const productsContainer = document.querySelector(container);
     if (productsContainer) {
         productsContainer.appendChild(productCard);
     } else {
@@ -306,11 +276,11 @@ function createSaleCard(productTitle, productImgSrc, productOldPrice, productNew
 
     const oldPricePara = document.createElement('p');
     oldPricePara.className = 'oldPrice';
-    oldPricePara.textContent = productOldPrice;
+    oldPricePara.textContent = `$${productOldPrice}`;
 
     const newPricePara = document.createElement('p');
     newPricePara.className = 'newPrice';
-    newPricePara.textContent = productNewPrice;
+    newPricePara.textContent = `$${productNewPrice}`;
 
     priceDiv.appendChild(oldPricePara);
     priceDiv.appendChild(newPricePara);
@@ -339,6 +309,7 @@ function createSaleCard(productTitle, productImgSrc, productOldPrice, productNew
     cardSaleDiv.appendChild(bgCardSaleDiv);
 
     saleCardsContainer.appendChild(cardSaleDiv);
+    return cardSaleDiv; 
 }
 
 function createHorizontalCard(productTitle, productImgSrc, productRating, productNumberRating, productIdentifier, productOldPrice, productNewPrice) {
@@ -375,12 +346,13 @@ function createHorizontalCard(productTitle, productImgSrc, productRating, produc
     const starsDiv = document.createElement('div');
     starsDiv.className = 'stars';
 
-    for (let i = 0; i < productRating; i++) {
+    for (let i = 1; i <= 5; i++) {
         const starImg = document.createElement('img');
-        starImg.src = 'img/star.svg';
+        starImg.src = i <= productRating ? 'img/star.svg' : 'img/notstar.svg';
         starImg.alt = 'star';
         starsDiv.appendChild(starImg);
     }
+    
 
     const numberRatingPara = document.createElement('p');
     numberRatingPara.className = 'numberRating';
@@ -458,6 +430,8 @@ function createHorizontalCard(productTitle, productImgSrc, productRating, produc
     horizontalCardDiv.appendChild(actionsDiv);
 
     horizontalCardContainer.appendChild(horizontalCardDiv);
+
+    return horizontalCardDiv
 }
 
 //Carga de Pagina
