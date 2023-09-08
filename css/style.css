@@ -84,7 +84,7 @@ nav .productsInCart {
 }
 
 
-#card {  
+.card {  
     z-index: 1;
     position: relative; /* Asegura que #card sea un elemento de posición relativa */
     background-color: white;
@@ -103,7 +103,7 @@ nav .productsInCart {
     width: 250px;
 }
 .picture img{
-    width: 350px;
+    width: 300px;
 }
 .productInfo{
     width: 316.514px;
@@ -202,7 +202,7 @@ nav .productsInCart {
 section{
     margin-bottom: 59px;
 }
-#cardSale{  
+.cardSale{  
     background-color: #FFD100;
     box-shadow: 6px 10px 12.5px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -215,15 +215,15 @@ section{
 .label {
     width: 120px;
     position: absolute;
-    bottom: 205px;
-    right: -18px;
+    bottom: 167px;
+    right: -27px;
     z-index: 1;
 }
 
 .labelText {
     position: absolute;
-    bottom: 251px;
-    right: 20px;
+    bottom: 214px; 
+    right: 9px;
     color: white;
     font-size: 25px;
     font-weight: bold;
@@ -242,7 +242,7 @@ section{
     display: flex;
 }
 .horizontalCard{
-    width: 389.54px;
+    width: 370px;
     background-color: white;
     box-shadow: 6px 10px 12.5px rgba(0, 0, 0, 0.1);
     border-radius: 10px;
@@ -250,13 +250,14 @@ section{
     filter: drop-shadow(6px 10px 25px rgba(0, 0, 0, 0.10));
 }
 .horizontalPicture {
-    margin: auto 34px auto 15px;
+    margin: auto 20px auto 15px;
+
     display: inline-block;
-    height: 172px;
+    height: 100px;
 }
 
 .horizontalPicture img{
-    width: 200px;
+    width: 150px;
 }
 .productInfoHorizontal{
     display: flex;
@@ -300,7 +301,7 @@ margin: 0;
     flex-direction: column;
     flex-shrink: 0;
     margin-bottom: 10px;
-    margin-left: 80px;
+
 }
 .actions{
     display: flex;
@@ -353,6 +354,17 @@ margin: 0;
     .products {
         grid-template-columns: repeat(auto-fit, 1fr)
     }
+    .picture img{
+        width: 350px;
+    }
+    .label {
+        bottom: 205px;
+        right: -18px;
+    }
+    .labelText{
+        bottom: 251px;
+        right: 20px;
+    }
     .productsH {
         padding: 0 0 0 1em;
         column-gap: 0px;
@@ -363,6 +375,16 @@ margin: 0;
     .horizontalCard{
     width: 589.303px;
     flex-shrink: 0; 
+    }
+    .horizontalPicture{
+        margin: auto 34px auto 15px;
+        height: auto;
+    }
+    .horizontalPicture img {
+        width: 210px;
+    }
+    .horizontalPrice{
+        margin-left:80px;
     }
     .addCartH {
         width: 295px;
