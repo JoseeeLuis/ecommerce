@@ -1,9 +1,15 @@
-// script.js
-let cart = []; // Array para almacenar los productos seleccionados
+loadCartFromLocalStorage();
 let counterDiv = document.querySelector(".counter");
 let productInCart;
 let quantityProducts;
 let addNotificationDiv= true;
+
+function loadCartFromLocalStorage() {
+    const cartData = localStorage.getItem('cart');
+    if (cartData) {
+        cart = JSON.parse(cartData);
+    }
+}
 
 async function fetchData() {
     
@@ -20,12 +26,9 @@ async function fetchData() {
         console.error("Error al obtener los datos de la API:", error);
     }
 }
-function getProductInfo(item) {
-    return item;
-}
 
 async function initializer() {
-
+    
     const data = await fetchData() 
         console.log(data)
 
@@ -85,18 +88,16 @@ async function initializer() {
     });
 
     const btns = document.querySelectorAll(".btn-Cart");
-
     btns.forEach(function (btn) {
-    btn.addEventListener("click", function (evento) {
-        console.log("Click  ");
+        btn.addEventListener('click', function (evento) {
+            console.log(cart);
+            saveCartToLocalStorage(); // Guardar el carrito en el almacenamiento local
+            createNotification();
+            productsInCartCounter.textContent = cart.length.toString(); // Actualizar el contador de productos en el carrito
+        });
     });
-    });
-    }
 
-
-function convertToString(object) {
-    return JSON.stringify(object);
-}
+}   
 
 function createElementWithClass(tagName, className) {
     let element = document.createElement(tagName);
@@ -104,51 +105,19 @@ function createElementWithClass(tagName, className) {
     return element;
 }
 
-function createNotification() {
-    const notification = document.createElement("div");
-    notification.className = "productsInCart";
-    
-    const quantityProducts = document.createElement("p");
-    quantityProducts.className = "quantityProducts";
-    quantityProducts.textContent = cart.length > 9 ? '9+' : cart.length;
-    
-    notification.appendChild(quantityProducts);
-    counterDiv.appendChild(notification);
-}
-
-function changeQuantityProducts(number) {
-    const quantityProducts = document.querySelector(".quantityProducts");
-    if (quantityProducts) {
-        quantityProducts.textContent = number;
-    }
-}
-
 function updateCartNotification() {
     const notification = document.querySelector(".productsInCart");
-    
-    if (!notification) {
-        // Si la notificación no existe, créala
-        createNotification();
+
+    if (notification) {
+        // Calcula la cantidad de productos en el carrito
+        const productCount = cart.length > 9 ? '9+' : cart.length;
+        notification.textContent = productCount;
     }
-    
-    const quantityProducts = cart.length > 9 ? '9+' : cart.length; // Verifica si hay más de 9 productos
-    changeQuantityProducts(quantityProducts);
-}   
-
-function pushToCart(item) {
-    cart.push(item);
-}
-
-function saveProduct() {
-    let productInfo = getProductInfo;
-    pushToCart(productInfo);
-    allProducts = convertToString(products);
-    localStorage.setItem("cart", allProducts);
 }
 
 function createProductCard(title, imgSrc, oldPrice, newPrice, identifierNumber) {
     const cardDiv = document.createElement("div");
-    cardDiv.id = "card";
+    cardDiv.className = "card";
 
     const bgCardDiv = document.createElement("div");
     bgCardDiv.className = "bgCard";
@@ -192,6 +161,7 @@ function createProductCard(title, imgSrc, oldPrice, newPrice, identifierNumber) 
 
     const addButton = document.createElement("button");
     addButton.className = "addCart btn-Cart";
+    
 
     const shoppingBagIcon = document.createElement("img");
     shoppingBagIcon.className = "shoppingBag";
@@ -204,6 +174,18 @@ function createProductCard(title, imgSrc, oldPrice, newPrice, identifierNumber) 
 
     addButton.appendChild(shoppingBagIcon);
     addButton.appendChild(plusIcon);
+    addButton.addEventListener("click", function (event) {
+        console.log("Click");
+
+        // Crear un objeto con la información del producto
+        const productInfo = {
+            title: title,
+            newPrice: newPrice,
+        };
+
+        pushToCart(productInfo)
+
+    });
 
     bgCardDiv.appendChild(addButton);
 
@@ -215,20 +197,11 @@ function createProductCard(title, imgSrc, oldPrice, newPrice, identifierNumber) 
     return cardDiv; // Devuelve la tarjeta de producto creada
 }
 
-function addProductToContainer(productCard, container) {
-    const productsContainer = document.querySelector(container);
-    if (productsContainer) {
-        productsContainer.appendChild(productCard);
-    } else {
-        console.error('No se encontró el contenedor de productos.');
-    }
-}
-
 function createSaleCard(productTitle, productImgSrc, productOldPrice, productNewPrice, productIdentifier, productDiscount) {
     const saleCardsContainer = document.querySelector('.saleCards');
 
     const cardSaleDiv = document.createElement('div');
-    cardSaleDiv.id = 'cardSale';
+    cardSaleDiv.className = 'cardSale';
 
     const bgCardSaleDiv = document.createElement('div');
     bgCardSaleDiv.className = 'bgCardSale';
@@ -300,6 +273,18 @@ function createSaleCard(productTitle, productImgSrc, productOldPrice, productNew
     addButton.appendChild(shoppingBagIcon);
     addButton.appendChild(plusIcon);
 
+    addButton.addEventListener("click", function (event) {
+        console.log("Click");
+
+        // Crear un objeto con la información del producto
+        const productInfo = {
+            title: productTitle,
+            newPrice: productNewPrice,
+        };
+
+        pushToCart(productInfo)
+    });
+
     bgCardSaleDiv.appendChild(pictureDiv);
     bgCardSaleDiv.appendChild(labelContainerDiv);
     bgCardSaleDiv.appendChild(productInfoDiv);
@@ -311,7 +296,7 @@ function createSaleCard(productTitle, productImgSrc, productOldPrice, productNew
     saleCardsContainer.appendChild(cardSaleDiv);
     return cardSaleDiv; 
 }
-
+//TO DO pasar array como parametro 
 function createHorizontalCard(productTitle, productImgSrc, productRating, productNumberRating, productIdentifier, productOldPrice, productNewPrice) {
     const horizontalCardContainer = document.querySelector('.productsH');
 
@@ -431,11 +416,63 @@ function createHorizontalCard(productTitle, productImgSrc, productRating, produc
 
     horizontalCardContainer.appendChild(horizontalCardDiv);
 
-    return horizontalCardDiv
+    const aboutProduct={
+        title:productTitle,
+        price:productNewPrice
+    }
+
+    addToCartButton.addEventListener("click", function (event) {
+        pushToCart(aboutProduct)
+    });
+
+
+    return horizontalCardDiv ;
+}
+
+function saveCartToLocalStorage() {
+    const cartJSON = JSON.stringify(cart);
+    localStorage.setItem('cart', cartJSON);
+}
+
+function createNotification() {
+    const notification = document.createElement("div");
+    notification.className = "productsInCart"; // Establece la clase como "productsInCart"
+
+    // Calcula la cantidad de productos en el carrito
+    const productCount = cart.length > 9 ? '9+' : cart.length;
+    notification.textContent = productCount;
+
+    // Selecciona el elemento con clase "counter" en el DOM y agrega la notificación
+    const counterDiv = document.querySelector(".counter");
+    if (counterDiv) {
+        counterDiv.appendChild(notification);
+    } else {
+        console.error('No se encontró el contenedor de productos en el carrito.');
+    }
+}
+
+function addProductToContainer(productCard, container) {
+    const productsContainer = document.querySelector(container);
+    if (productsContainer) {
+        productsContainer.appendChild(productCard);
+    } else {
+        console.error('No se encontró el contenedor de productos.');
+    }
+}
+
+function pushToCart(item) {
+    cart.push(item);
 }
 
 //Carga de Pagina
 window.addEventListener("load", (event) => {
+    const savedCart = localStorage.getItem("cart");
+    if (savedCart) {
+        cart = JSON.parse(savedCart); // Restaura el carrito desde el almacenamiento local
+        updateCartNotification();
+        createNotification(); // Actualiza la notificación del carrito
+    }
+
     console.log("La página se ha cargado completamente");
     initializer();
 });
