@@ -1,8 +1,9 @@
-loadCartFromLocalStorage();
+let cart = []; // Initialize the cart variable
 let counterDiv = document.querySelector(".counter");
-let productInCart;
+let productsInCartCounter = document.querySelector(".productsInCart"); 
 let quantityProducts;
 let addNotificationDiv= true;
+loadCartFromLocalStorage(); 
 
 function loadCartFromLocalStorage() {
     const cartData = localStorage.getItem('cart');
